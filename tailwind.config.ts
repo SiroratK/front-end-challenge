@@ -1,4 +1,25 @@
 import type { Config } from "tailwindcss";
+const plugin = require("tailwindcss/plugin");
+
+const CardFlip = plugin(function ({ addUtilities }: any) {
+  addUtilities({
+    ".my-rotate-y-180": {
+      transform: "rotateY(180deg)",
+    },
+    ".my-rotate-y-0": {
+      transform: "rotateY(0deg)",
+    },
+    ".preserve-3d": {
+      transformStyle: "preserve-3d",
+    },
+    ".perspective": {
+      perspective: "1000px",
+    },
+    ".backface-hidden": {
+      backfaceVisibility: "hidden",
+    },
+  });
+});
 
 const config: Config = {
   content: [
@@ -15,6 +36,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [CardFlip],
 };
 export default config;
