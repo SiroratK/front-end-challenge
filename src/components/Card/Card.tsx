@@ -10,7 +10,7 @@ const Card = ({
   onClick: (card: CardItem) => void;
 }) => {
   return (
-    <div className="cursor-pointer group perspective  w-24 h-36">
+    <div className="cursor-pointer group perspective w-16 h-24 md:w-24 md:h-36">
       <div
         className={`relative preserve-3d ${
           !card.isOpen && "my-rotate-y-180"

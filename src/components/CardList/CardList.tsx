@@ -31,10 +31,10 @@ const CardList = () => {
   const [count, setCount] = useState<number>(0);
 
   const toggleCardOpenState = (item: CardItem) => {
-    setCount(count + 1);
     const cardIndex = cards.findIndex((card) => card.id === item.id);
     const updatedCards = [...cards];
-    if (tempIndexs.length < 2) {
+    if (tempIndexs.length < 2 && tempIndexs[0] !== cardIndex) {
+      setCount(count + 1);
       updatedCards[cardIndex] = {
         ...updatedCards[cardIndex],
         isOpen: !item.isOpen,
