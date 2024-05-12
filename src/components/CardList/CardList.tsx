@@ -1,34 +1,44 @@
 import React, { useEffect, useState } from "react";
 import Card from "../Card/Card";
-import _ from "lodash";
-import { shuffleArray } from "@/utils/shuffle";
+import _, { random } from "lodash";
+import { cardsList } from "@/utils/shuffle";
 
 export interface CardItem {
   id: number;
   value: number;
   isOpen: boolean;
+  src: string;
 }
 
 const CardList = () => {
   const [cards, setCards] = useState<CardItem[]>(
-    shuffleArray([
-      { id: 1, value: 1, isOpen: false },
-      { id: 2, value: 1, isOpen: false },
-      { id: 3, value: 2, isOpen: false },
-      { id: 4, value: 2, isOpen: false },
-      { id: 5, value: 3, isOpen: false },
-      { id: 6, value: 3, isOpen: false },
-      { id: 7, value: 4, isOpen: false },
-      { id: 8, value: 4, isOpen: false },
-      { id: 9, value: 5, isOpen: false },
-      { id: 10, value: 5, isOpen: false },
-      { id: 11, value: 6, isOpen: false },
-      { id: 12, value: 6, isOpen: false },
-    ])
+    cardsList
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value)
   );
 
   const [tempIndexs, setTempIndexs] = useState<number[]>([]);
   const [count, setCount] = useState<number>(0);
+
+  const onReset = () => {
+    setTempIndexs([]);
+    setCount(0);
+    const update = cards.map((card, index) => {
+        return { ...card, isOpen: false};
+    });
+    setCards(update)
+    setTimeout(() => {
+      setCards(
+      cardsList
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value)
+    );
+    }, 1000);
+    
+    
+  };
 
   const toggleCardOpenState = (item: CardItem) => {
     const cardIndex = cards.findIndex((card) => card.id === item.id);
@@ -60,7 +70,9 @@ const CardList = () => {
         }, 1000);
         return;
       }
-      setTempIndexs([]);
+      setTimeout(() => {
+        setTempIndexs([]);
+      }, 1000);
       return;
     }
     return;
@@ -69,24 +81,35 @@ const CardList = () => {
   const chunkArr = (arr: CardItem[], size: number) => _.chunk(arr, size);
 
   return (
-    <>
+    <div className="window">
+      <div className="title-bar">
+        <div className="title-bar-text">Flip card</div>
+        <div className="title-bar-controls">
+          <button aria-label="Minimize" />
+          <button aria-label="Maximize" />
+          <button aria-label="Close" />
+        </div>
+      </div>
       {chunkArr(cards, 4).map((row: CardItem[], rowIndex: number) => {
         return (
           <div
             key={rowIndex}
             style={{ flexDirection: "row" }}
-            className="flex space-x-4 mb-4"
+            className="flex space-x-4 mb-4 m-4 md:m-10"
           >
             {row.map((item: CardItem, index: number) => (
               <div key={index}>
-                <Card card={item} onClick={toggleCardOpenState}  />
+                <Card card={item} onClick={toggleCardOpenState} count={count} />
               </div>
             ))}
           </div>
         );
       })}
-      <p>Count : {count}</p>
-    </>
+      <div className="text-center mb-4">
+        <p className="mb-4">Count : {count}</p>
+        <button onClick={onReset}>reset</button>
+      </div>
+    </div>
   );
 };
 
