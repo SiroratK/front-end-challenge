@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Card from "../Card/Card";
-import _, { random } from "lodash";
+import _ from "lodash";
 import { cardsList } from "@/utils/shuffle";
+import { Modal } from "../Modal";
+import TopPlayers from "../TopPlayers/TopPlayers";
 
 export interface CardItem {
   id: number;
@@ -20,24 +22,30 @@ const CardList = () => {
 
   const [tempIndexs, setTempIndexs] = useState<number[]>([]);
   const [count, setCount] = useState<number>(0);
+  const [isShownModal, setIsShownModal] = useState<boolean>(false);
+  const [isShownTopPlayer, setIsShownTopPlayer] = useState<boolean>(false);
+
+  
+
+  const cardLeft = cards.findIndex((cardItem) => {
+    return cardItem.isOpen === false;
+  });
 
   const onReset = () => {
     setTempIndexs([]);
     setCount(0);
     const update = cards.map((card, index) => {
-        return { ...card, isOpen: false};
+      return { ...card, isOpen: false };
     });
-    setCards(update)
+    setCards(update);
     setTimeout(() => {
       setCards(
-      cardsList
-        .map((value) => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value)
-    );
+        cardsList
+          .map((value) => ({ value, sort: Math.random() }))
+          .sort((a, b) => a.sort - b.sort)
+          .map(({ value }) => value)
+      );
     }, 1000);
-    
-    
   };
 
   const toggleCardOpenState = (item: CardItem) => {
@@ -78,6 +86,12 @@ const CardList = () => {
     return;
   }, [cards, tempIndexs]);
 
+  useEffect(() => {
+    if (cardLeft === -1) {
+      return setIsShownModal(true);
+    }
+  }, [cardLeft]);
+
   const chunkArr = (arr: CardItem[], size: number) => _.chunk(arr, size);
 
   return (
@@ -90,27 +104,49 @@ const CardList = () => {
           <button aria-label="Close" />
         </div>
       </div>
-      {chunkArr(cards, 4).map((row: CardItem[], rowIndex: number) => {
-        return (
-          <div
-            key={rowIndex}
-            style={{ flexDirection: "row" }}
-            className="flex space-x-4 mb-4 m-4 md:m-10"
-          >
-            {row.map((item: CardItem, index: number) => (
-              <div key={index}>
-                <Card card={item} onClick={toggleCardOpenState} count={count} />
-              </div>
-            ))}
-          </div>
-        );
-      })}
-      <div className="text-center mb-4">
-        <p className="mb-4">Count : {count}</p>
-        <button onClick={onReset}>reset</button>
+      <div>
+        <Modal
+          isShown={isShownModal}
+          text={`Yeah ! You win in ${count} times click!`}
+          confirmText="confirm"
+          onConfirm={() => setIsShownModal(false)}
+        />
+        <TopPlayers isShown={isShownTopPlayer} onClose={() => setIsShownTopPlayer(false)} />
+        {chunkArr(cards, 4).map((row: CardItem[], rowIndex: number) => {
+          return (
+            <div
+              key={rowIndex}
+              style={{ flexDirection: "row" }}
+              className="flex space-x-4 mb-4 m-4 md:m-10"
+            >
+              {row.map((item: CardItem, index: number) => (
+                <div key={index}>
+                  <Card
+                    card={item}
+                    onClick={toggleCardOpenState}
+                    count={count}
+                  />
+                </div>
+              ))}
+            </div>
+          );
+        })}
+        <div className="text-center mb-4 space-x-2">
+          <p className="mb-4">
+            {cardLeft == -1
+              ? `You win in ${count} times click!`
+              : `Count : ${count}`}
+          </p>
+          <button onClick={onReset}>reset</button>
+          <button onClick={() => setIsShownTopPlayer(true)}>top players</button>
+        </div>
       </div>
     </div>
   );
 };
 
 export default CardList;
+function getArtist(username: any) {
+  throw new Error("Function not implemented.");
+}
+

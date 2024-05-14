@@ -37,12 +37,10 @@ function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 -z-20">
+    <main className="flex min-h-screen flex-col items-center justify-center p-24 -z-20 bg-green-ninety-eight">
       <CardList />
     </main>
   );
 }
 
-export default dynamic(() => Promise.resolve(Home), {
-  ssr: false,
-});
+export default Home;
