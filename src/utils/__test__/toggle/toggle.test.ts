@@ -124,8 +124,6 @@ test("test flip 2 card and unmatch", () => {
     { id: 12, value: 6, isOpen: false, src: "/image-6.png" },
   ]);
 
-  console.log("crrent", result.current.tempIndexs);
-
   expect(result.current.tempIndexs).toEqual([]);
 });
 

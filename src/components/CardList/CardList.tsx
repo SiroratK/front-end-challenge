@@ -20,8 +20,6 @@ const CardList = () => {
   const [isShownModal, setIsShownModal] = useState<boolean>(false);
   const [isShownTopPlayer, setIsShownTopPlayer] = useState<boolean>(false);
 
-  console.log('data')
-
   const cardLeft = cards.findIndex((cardItem) => {
     return cardItem.isOpen === false;
   });
@@ -54,7 +52,6 @@ const CardList = () => {
 
   useEffect(() => {
     if (tempIndexs.length === 2) {
-      console.log(cards[tempIndexs[0]].value, cards[tempIndexs[1]].value);
       if (cards[tempIndexs[0]].value !== cards[tempIndexs[1]].value) {
         const update = cards.map((card, index) => {
           if (index === tempIndexs[0] || index === tempIndexs[1]) {
