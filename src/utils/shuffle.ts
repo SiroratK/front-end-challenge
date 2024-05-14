@@ -15,3 +15,9 @@ export const cardsList:CardItem[] = [
   { id: 12, value: 6, isOpen: false, src: "/image-6.png" },
 ];
 
+export const shuffle = (cards: CardItem[]) => {
+    return cards
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+}

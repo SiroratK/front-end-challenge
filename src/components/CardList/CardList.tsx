@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "../Card/Card";
 import _ from "lodash";
-import { cardsList } from "@/utils/shuffle";
+import { cardsList, shuffle } from "@/utils/shuffle";
 import { Modal } from "../Modal";
 import TopPlayers from "../TopPlayers/TopPlayers";
 
@@ -13,19 +13,14 @@ export interface CardItem {
 }
 
 const CardList = () => {
-  const [cards, setCards] = useState<CardItem[]>(
-    cardsList
-      .map((value) => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value)
-  );
+  const [cards, setCards] = useState<CardItem[]>(shuffle(cardsList));
 
   const [tempIndexs, setTempIndexs] = useState<number[]>([]);
   const [count, setCount] = useState<number>(0);
   const [isShownModal, setIsShownModal] = useState<boolean>(false);
   const [isShownTopPlayer, setIsShownTopPlayer] = useState<boolean>(false);
 
-  
+  console.log('data')
 
   const cardLeft = cards.findIndex((cardItem) => {
     return cardItem.isOpen === false;
@@ -39,12 +34,7 @@ const CardList = () => {
     });
     setCards(update);
     setTimeout(() => {
-      setCards(
-        cardsList
-          .map((value) => ({ value, sort: Math.random() }))
-          .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value)
-      );
+      setCards(shuffle(cardsList));
     }, 1000);
   };
 
@@ -107,11 +97,14 @@ const CardList = () => {
       <div>
         <Modal
           isShown={isShownModal}
-          text={`Yeah ! You win in ${count} times click!`}
+          text={`Yeah ! You win with ${count} times click!`}
           confirmText="confirm"
           onConfirm={() => setIsShownModal(false)}
         />
-        <TopPlayers isShown={isShownTopPlayer} onClose={() => setIsShownTopPlayer(false)} />
+        <TopPlayers
+          isShown={isShownTopPlayer}
+          onClose={() => setIsShownTopPlayer(false)}
+        />
         {chunkArr(cards, 4).map((row: CardItem[], rowIndex: number) => {
           return (
             <div
@@ -134,7 +127,7 @@ const CardList = () => {
         <div className="text-center mb-4 space-x-2">
           <p className="mb-4">
             {cardLeft == -1
-              ? `You win in ${count} times click!`
+              ? `You win with ${count} times click!`
               : `Count : ${count}`}
           </p>
           <button onClick={onReset}>reset</button>
@@ -149,4 +142,3 @@ export default CardList;
 function getArtist(username: any) {
   throw new Error("Function not implemented.");
 }
-
